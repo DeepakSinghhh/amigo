@@ -1,4 +1,63 @@
-import React, { useState, useEffect } from 'react';
+const fs = require('fs');
+
+const appContent = fs.readFileSync('App.tsx', 'utf-8');
+
+// 1. Extract Home content
+const homeStartStr = `          <div className="space-y-0 pb-0">
+            {/* Hero Section */}`;
+const homeEndStr = `            )}
+          </div>
+        );
+    }
+  };`;
+const homeStart = appContent.indexOf(homeStartStr);
+const homeEnd = appContent.indexOf(homeEndStr) + homeEndStr.length - 24; // approx, let's use regex
+
+const match = appContent.match(/<div className="space-y-0 pb-0">([\s\S]*?)<\/div>\s*\);\s*\}\s*\};\s*const isChatView/);
+
+if (match) {
+  const homeJSX = '<div className="space-y-0 pb-0">' + match[1] + '</div>';
+  
+  // Extract TECHNIQUES
+  const techniquesMatch = appContent.match(/const TECHNIQUES = \[[\s\S]*?\];/);
+  const techniques = techniquesMatch ? techniquesMatch[0] : '';
+  
+  const homeComponent = `import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Phone, X, MessageCircle, Binoculars, Heart } from 'lucide-react';
+import MoodTracker from './MoodTracker';
+import MentalHealthAssessment from './MentalHealthAssessment';
+
+${techniques}
+
+const Home: React.FC = () => {
+  const navigate = useNavigate();
+  const [selectedTechnique, setSelectedTechnique] = useState<typeof TECHNIQUES[0] | null>(null);
+
+  const handleNavigateToResources = (category: string) => {
+    navigate('/resources', { state: { category } });
+  };
+
+  return (
+    ${homeJSX.replace(/setCurrentView\(ViewState\.CHAT\)/g, "navigate('/chat')")
+             .replace(/setCurrentView\(ViewState\.BOOKING\)/g, "navigate('/counseling')")
+             .replace(/setCurrentView\(ViewState\.RESOURCES\)/g, "navigate('/resources')")
+             .replace(/setCurrentView\(ViewState\.FORUM\)/g, "navigate('/forum')")
+             .replace(/setCurrentView\(ViewState\.ADMIN\)/g, "navigate('/admin')")
+             .replace(/ViewState\.[A-Z_]+/g, "''")}
+  );
+};
+
+export default Home;
+`;
+  fs.writeFileSync('components/Home.tsx', homeComponent);
+  console.log('Created components/Home.tsx');
+} else {
+  console.log('Could not match Home JSX');
+}
+
+// 2. Rewrite App.tsx
+const newAppContent = `import React, { useState, useEffect } from 'react';
 import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import Header from './components/Header';
 import Footer from './components/Footer';
@@ -26,19 +85,6 @@ const App: React.FC = () => {
     window.scrollTo({ top: 0, behavior: 'instant' });
   }, [location.pathname]);
 
-  useEffect(() => {
-    const token = localStorage.getItem('chaitanya_token');
-    const role = localStorage.getItem('chaitanya_role');
-    if (token && role && location.pathname === '/') {
-        setCurrentUserRole(role as UserRole);
-        if (role === 'student') navigate('/home');
-        else if (role === 'counselor') navigate('/counselor-portal');
-        else if (role === 'parent') navigate('/parent-portal');
-        else if (role === 'super_admin') navigate('/super-admin');
-        else if (role === 'institution_admin') navigate('/admin');
-    }
-  }, [location.pathname, navigate]);
-
   const handleLogin = (role: UserRole) => {
       setCurrentUserRole(role);
       if (role === 'student') navigate('/home');
@@ -49,8 +95,6 @@ const App: React.FC = () => {
   };
 
   const handleLogout = () => {
-      localStorage.removeItem('chaitanya_token');
-      localStorage.removeItem('chaitanya_role');
       setCurrentUserRole(null);
       navigate('/');
   };
@@ -64,11 +108,11 @@ const App: React.FC = () => {
       {!isAuthView && <Header />}
       
       <main 
-        className={`flex-grow px-0 transition-all duration-300 ease-in-out ${
+        className={\`flex-grow px-0 transition-all duration-300 ease-in-out \${
           isChatView 
             ? 'h-[100dvh] overflow-hidden pt-28 pb-6 px-4 sm:px-6' 
             : isAuthView ? '' : isHomeView ? 'pt-0 pb-0' : 'pt-28 pb-12'
-        }`}
+        }\`}
       >
         <Routes>
           <Route path="/" element={<AuthScreen onLogin={handleLogin} />} />
@@ -108,3 +152,6 @@ const App: React.FC = () => {
 };
 
 export default App;
+`;
+fs.writeFileSync('App.tsx', newAppContent);
+console.log('Created new App.tsx');

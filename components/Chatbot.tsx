@@ -50,28 +50,12 @@ interface ChatbotProps {
 }
 
 const Chatbot: React.FC<ChatbotProps> = ({ onNavigateToResources }) => {
-  const [messages, setMessages] = useState<Message[]>(() => {
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem(CHAT_STORAGE_KEY);
-      if (saved) {
-        try {
-          const parsed = JSON.parse(saved);
-          return parsed.map((m: any) => ({
-            ...m,
-            timestamp: new Date(m.timestamp)
-          }));
-        } catch (e) {
-          console.error("Error parsing chat history:", e);
-        }
-      }
-    }
-    return [{
-      id: '1',
-      text: "Hi there. I'm Kiwi, your digital companion. Whether you're feeling stressed, lonely, or just need to vent, I'm here to listen without judgment. How are you feeling today?",
-      sender: 'ai',
-      timestamp: new Date(),
-    }];
-  });
+  const [messages, setMessages] = useState<Message[]>([{
+    id: '1',
+    text: "Hi there. I'm Kiwi, your digital companion. Whether you're feeling stressed, lonely, or just need to vent, I'm here to listen without judgment. How are you feeling today?",
+    sender: 'ai',
+    timestamp: new Date(),
+  }]);
   
   const [inputText, setInputText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -90,19 +74,46 @@ const Chatbot: React.FC<ChatbotProps> = ({ onNavigateToResources }) => {
   }, [messages, isLoading, isTyping]);
 
   useEffect(() => {
-    localStorage.setItem(CHAT_STORAGE_KEY, JSON.stringify(messages));
-  }, [messages]);
+    const fetchHistory = async () => {
+      try {
+        const token = localStorage.getItem('chaitanya_token');
+        const response = await fetch('http://localhost:3000/api/history', {
+          headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+        });
+        if (response.ok) {
+          const data = await response.json();
+          if (data && data.length > 0) {
+            setMessages(data.map((m: any) => ({
+              ...m,
+              timestamp: new Date(m.timestamp)
+            })));
+          }
+        }
+      } catch (err) {
+        console.error("Failed to fetch history", err);
+      }
+    };
+    fetchHistory();
+  }, []);
 
-  const handleClearChat = () => {
+  const handleClearChat = async () => {
     if (window.confirm("Are you sure you want to clear your conversation history? This cannot be undone.")) {
-      const initialMessage: Message = {
-        id: Date.now().toString(),
-        text: "Hi there. I'm Kiwi, your digital companion. Whether you're feeling stressed, lonely, or just need to vent, I'm here to listen without judgment. How are you feeling today?",
-        sender: 'ai',
-        timestamp: new Date(),
-      };
-      setMessages([initialMessage]);
-      localStorage.removeItem(CHAT_STORAGE_KEY);
+      try {
+        const token = localStorage.getItem('chaitanya_token');
+        await fetch('http://localhost:3000/api/history/clear', { 
+          method: 'POST',
+          headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+        });
+        const initialMessage: Message = {
+          id: Date.now().toString(),
+          text: "Hi there. I'm Kiwi, your digital companion. Whether you're feeling stressed, lonely, or just need to vent, I'm here to listen without judgment. How are you feeling today?",
+          sender: 'ai',
+          timestamp: new Date(),
+        };
+        setMessages([initialMessage]);
+      } catch (err) {
+        console.error("Failed to clear chat", err);
+      }
     }
   };
 
@@ -123,18 +134,30 @@ const Chatbot: React.FC<ChatbotProps> = ({ onNavigateToResources }) => {
     const textToSend = textOverride || inputText;
     if (!textToSend.trim()) return;
 
-    const userMsg: Message = {
+    const tempUserMsg: Message = {
       id: Date.now().toString(),
       text: textToSend,
       sender: 'user',
       timestamp: new Date(),
     };
-
-    setMessages((prev) => [...prev, userMsg]);
+    setMessages((prev) => [...prev, tempUserMsg]);
     setInputText('');
     setIsLoading(true);
-    // Automatically open game when AI starts thinking
     setIsGameOpen(true);
+
+    try {
+      const token = localStorage.getItem('chaitanya_token');
+      await fetch('http://localhost:3000/api/history', {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+          ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+        },
+        body: JSON.stringify({ text: textToSend, sender: 'user' })
+      });
+    } catch (e) {
+      console.error(e);
+    }
 
     const aiResponseTextRaw = await sendMessageToAI(messages, textToSend);
     
@@ -149,15 +172,33 @@ const Chatbot: React.FC<ChatbotProps> = ({ onNavigateToResources }) => {
     setIsLoading(false);
     setIsTyping(true);
 
-    setTimeout(() => {
-      const aiMsg: Message = {
+    setTimeout(async () => {
+      let finalAiMsg: Message = {
         id: (Date.now() + 1).toString(),
         text: cleanResponse,
         sender: 'ai',
         timestamp: new Date(),
       };
+      
+      try {
+        const token = localStorage.getItem('chaitanya_token');
+        const response = await fetch('http://localhost:3000/api/history', {
+          method: 'POST',
+          headers: { 
+            'Content-Type': 'application/json',
+            ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+          },
+          body: JSON.stringify({ text: cleanResponse, sender: 'ai' })
+        });
+        if (response.ok) {
+           const savedMsg = await response.json();
+           finalAiMsg = { ...savedMsg, timestamp: new Date(savedMsg.timestamp) };
+        }
+      } catch (e) {
+        console.error(e);
+      }
 
-      setMessages((prev) => [...prev, aiMsg]);
+      setMessages((prev) => [...prev, finalAiMsg]);
       setIsTyping(false);
     }, 3000);
   };

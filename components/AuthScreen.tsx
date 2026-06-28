@@ -18,6 +18,51 @@ const ROLES: { id: UserRole; label: string; icon: React.ReactNode; color: string
 const AuthScreen: React.FC<AuthScreenProps> = ({ onLogin }) => {
   const [selectedRole, setSelectedRole] = useState<UserRole>('student');
   const [isLogin, setIsLogin] = useState(true);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleSubmit = async () => {
+    if (!email || !password) {
+      setError("Email and password are required");
+      return;
+    }
+    
+    setError('');
+    setIsLoading(true);
+    
+    const endpoint = isLogin ? '/api/auth/login' : '/api/auth/register';
+    const body = isLogin 
+      ? { email, password } 
+      : { email, password, role: selectedRole };
+
+    try {
+      const res = await fetch(`http://localhost:3000${endpoint}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+      const data = await res.json();
+      
+      if (!res.ok) {
+        setError(data.error || "Authentication failed");
+        setIsLoading(false);
+        return;
+      }
+
+      // Store the token
+      localStorage.setItem('chaitanya_token', data.token);
+      localStorage.setItem('chaitanya_role', data.user.role);
+      
+      onLogin(data.user.role as UserRole);
+    } catch (err) {
+      console.error(err);
+      setError("Network error. Please make sure the backend is running.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-[var(--neo-bg)] flex items-center justify-center p-6 relative overflow-hidden">
@@ -33,62 +78,66 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ onLogin }) => {
           <NeoLogo size="lg" showText={true} />
         </div>
 
-        {/* Role Selector */}
-        <div className="space-y-4 mb-8">
-            <p className="text-sm font-black text-gray-500 uppercase tracking-widest text-center">Select your role</p>
-            <div className="grid grid-cols-2 gap-3">
-                {ROLES.slice(0, 4).map(role => (
-                    <button
-                        key={role.id}
-                        onClick={() => setSelectedRole(role.id)}
-                        className={`flex flex-col items-center p-4 rounded-xl transition-all border-2 border-black ${
-                            selectedRole === role.id 
-                            ? 'bg-[var(--neo-sky)] shadow-[var(--neo-shadow-active)] translate-y-1 translate-x-1' 
-                            : 'bg-white hover:bg-gray-50 shadow-[var(--neo-shadow)] hover:translate-y-[-2px] hover:translate-x-[-2px]'
-                        }`}
-                    >
-                        <div className={`p-2 rounded-2xl mb-2 ${role.color}`}>{role.icon}</div>
-                        <span className="text-xs font-bold text-gray-900">{role.label}</span>
-                    </button>
-                ))}
-            </div>
-            {/* Super Admin centered at bottom */}
-            <div className="flex justify-center mt-4">
-                 <button
-                    onClick={() => setSelectedRole(ROLES[4].id)}
-                    className={`flex items-center gap-3 px-6 py-3 rounded-xl transition-all border-2 border-black ${
-                        selectedRole === ROLES[4].id 
-                        ? 'bg-[var(--neo-sky)] shadow-[var(--neo-shadow-active)] translate-y-1 translate-x-1' 
-                        : 'bg-white hover:bg-gray-50 shadow-[var(--neo-shadow)] hover:translate-y-[-2px] hover:translate-x-[-2px]'
-                    }`}
-                >
-                    <div className={`p-1.5 rounded-xl ${ROLES[4].color}`}>{ROLES[4].icon}</div>
-                    <span className="text-xs font-bold text-gray-900">{ROLES[4].label}</span>
-                </button>
-            </div>
-        </div>
+        {/* Role Selector (Only show on Registration) */}
+        {!isLogin && (
+          <div className="space-y-4 mb-8 animate-fade-in">
+              <p className="text-sm font-black text-gray-500 uppercase tracking-widest text-center">Select your role</p>
+              <div className="grid grid-cols-2 gap-3">
+                  {ROLES.slice(0, 4).map(role => (
+                      <button
+                          key={role.id}
+                          onClick={() => setSelectedRole(role.id)}
+                          className={`flex flex-col items-center p-4 rounded-xl transition-all border-2 border-black ${
+                              selectedRole === role.id 
+                              ? 'bg-[var(--neo-sky)] shadow-[var(--neo-shadow-active)] translate-y-1 translate-x-1' 
+                              : 'bg-white hover:bg-gray-50 shadow-[var(--neo-shadow)] hover:translate-y-[-2px] hover:translate-x-[-2px]'
+                          }`}
+                      >
+                          <div className={`p-2 rounded-2xl mb-2 ${role.color}`}>{role.icon}</div>
+                          <span className="text-xs font-bold text-gray-900">{role.label}</span>
+                      </button>
+                  ))}
+              </div>
+              <div className="flex justify-center mt-4">
+                   <button
+                      onClick={() => setSelectedRole(ROLES[4].id)}
+                      className={`flex items-center gap-3 px-6 py-3 rounded-xl transition-all border-2 border-black ${
+                          selectedRole === ROLES[4].id 
+                          ? 'bg-[var(--neo-sky)] shadow-[var(--neo-shadow-active)] translate-y-1 translate-x-1' 
+                          : 'bg-white hover:bg-gray-50 shadow-[var(--neo-shadow)] hover:translate-y-[-2px] hover:translate-x-[-2px]'
+                      }`}
+                  >
+                      <div className={`p-1.5 rounded-xl ${ROLES[4].color}`}>{ROLES[4].icon}</div>
+                      <span className="text-xs font-bold text-gray-900">{ROLES[4].label}</span>
+                  </button>
+              </div>
+          </div>
+        )}
 
         {/* Login Form */}
         <div className="neo-card-inset !p-6 space-y-5 bg-white/30 border border-white/40">
+            {error && <div className="p-3 bg-red-100 border border-red-400 text-red-700 rounded-lg text-sm font-bold animate-pulse">{error}</div>}
+            
             <div>
                 <label className="block text-sm font-bold text-gray-700 mb-2">Email Address</label>
-                <input type="email" placeholder="you@university.edu" className="neo-input w-full !py-3" />
+                <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="you@university.edu" className="neo-input w-full !py-3" />
             </div>
             <div>
                 <label className="block text-sm font-bold text-gray-700 mb-2">Password</label>
-                <input type="password" placeholder="••••••••" className="neo-input w-full !py-3" />
+                <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="••••••••" className="neo-input w-full !py-3" />
             </div>
             <button 
-                onClick={() => onLogin(selectedRole)}
-                className="neo-button neo-button-primary w-full !py-4 flex justify-center items-center gap-2 mt-4"
+                onClick={handleSubmit}
+                disabled={isLoading}
+                className="neo-button neo-button-primary w-full !py-4 flex justify-center items-center gap-2 mt-4 disabled:opacity-50"
             >
-                {isLogin ? 'Sign In' : 'Create Account'} <ArrowRight size={20} />
+                {isLoading ? 'Processing...' : (isLogin ? 'Sign In' : 'Create Account')} <ArrowRight size={20} />
             </button>
         </div>
 
         <div className="text-center mt-6">
             <button 
-                onClick={() => setIsLogin(!isLogin)}
+                onClick={() => { setIsLogin(!isLogin); setError(''); }}
                 className="text-sm font-bold text-blue-600 hover:text-blue-800 transition-colors"
             >
                 {isLogin ? "Don't have an account? Sign up" : "Already have an account? Log in"}
