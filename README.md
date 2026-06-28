@@ -62,7 +62,7 @@ Make sure you have [Node.js](https://nodejs.org/) (v18+) installed.
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/chaitanya.git
+   git clone https://github.com/DeepakSinghhh/amigo.git
    cd chaitanya
    ```
 
