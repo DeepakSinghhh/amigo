@@ -453,8 +453,8 @@ const App: React.FC = () => {
       <main 
         className={`flex-grow px-0 transition-all duration-300 ease-in-out ${
           isChatView 
-            ? 'h-[calc(100vh-56px)] overflow-hidden pt-4 pb-0 px-4 sm:px-6' 
-            : isAuthView ? '' : 'pt-0 pb-0'
+            ? 'h-[100dvh] overflow-hidden pt-28 pb-6 px-4 sm:px-6' 
+            : isAuthView ? '' : currentView === ViewState.HOME ? 'pt-0 pb-0' : 'pt-28 pb-12'
         }`}
       >
         {renderContent()}
