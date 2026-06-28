@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import Chatbot from './components/Chatbot';
@@ -65,6 +65,11 @@ const App: React.FC = () => {
   const [resourceCategory, setResourceCategory] = useState<string>('All');
   const [selectedTechnique, setSelectedTechnique] = useState<typeof TECHNIQUES[0] | null>(null);
   const [currentUserRole, setCurrentUserRole] = useState<UserRole | null>(null);
+
+  // Automatically scroll to the top whenever the view changes
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }, [currentView]);
 
   const handleLogin = (role: UserRole) => {
       setCurrentUserRole(role);
