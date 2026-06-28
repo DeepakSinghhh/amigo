@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { ViewState } from '../types';
 import { Menu, X, HeartPulse, BookOpen, MessageCircle, Users, BarChart, Settings, LogOut, ChevronDown, Gamepad2 } from 'lucide-react';
+import NeoLogo from './NeoLogo';
 
 interface HeaderProps {
   currentView: ViewState;
@@ -34,84 +35,84 @@ const Header: React.FC<HeaderProps> = ({ currentView, setView }) => {
   ];
 
   return (
-    <header className="bg-white/70 backdrop-blur-xl border-b border-gray-200 sticky top-0 z-50 supports-[backdrop-filter]:bg-white/60">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-14 items-center">
+    <header className="fixed top-4 left-0 right-0 z-50 flex justify-center px-4 pointer-events-none">
+      <div className="neo-card !py-3 !px-6 !rounded-full pointer-events-auto w-full max-w-6xl flex justify-between items-center">
+        <div className="flex justify-between items-center w-full md:w-auto">
           <div className="flex items-center cursor-pointer group" onClick={() => setView(ViewState.HOME)}>
             <div className="flex-shrink-0 flex items-center gap-2">
-              <div className="w-8 h-8 bg-black text-white rounded-lg flex items-center justify-center shadow-md transition-transform group-hover:scale-105">
-                <HeartPulse className="h-5 w-5" />
+              <div className="transition-transform group-hover:-translate-y-1 group-hover:-translate-x-1">
+                <NeoLogo size="sm" showText={false} />
               </div>
-              <span className="font-semibold text-lg text-[#1d1d1f] tracking-tight">AmiGo</span>
+              <span className="font-extrabold text-2xl text-[var(--neo-text-dark)] tracking-tight ml-3">Chaitanya</span>
             </div>
           </div>
 
-          {/* Desktop Nav - Pill Style */}
-          <nav className="hidden md:flex space-x-1 items-center bg-gray-100/50 p-1 rounded-full border border-gray-200/50">
-            {navItems.map((item) => (
-              <button
-                key={item.view}
-                onClick={() => setView(item.view)}
-                className={`flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-300 ease-out ${
-                  currentView === item.view
-                    ? 'bg-white text-black shadow-sm'
-                    : 'text-gray-500 hover:text-black hover:bg-gray-200/50'
-                }`}
-              >
-                {item.icon}
-                {item.label}
-              </button>
-            ))}
-          </nav>
+          {/* Mobile menu button */}
+          <div className="flex items-center md:hidden">
+            <button
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="p-2 text-black hover:bg-gray-100 rounded-lg border-2 border-transparent hover:border-black transition-all focus:outline-none"
+            >
+              {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
+          </div>
+        </div>
 
-          <div className="flex items-center gap-4">
-            {/* Profile Dropdown */}
-            <div className="relative hidden md:block" ref={profileRef}>
-              <button
-                onClick={() => setIsProfileOpen(!isProfileOpen)}
-                className="flex items-center gap-2 focus:outline-none group"
-              >
-                <img
-                  src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-1.2.1&auto=format&fit=crop&w=100&q=80"
-                  alt="Profile"
-                  className="h-8 w-8 rounded-full ring-2 ring-transparent group-hover:ring-gray-200 transition-all object-cover shadow-sm"
-                />
-                <ChevronDown size={14} className={`text-gray-500 transition-transform duration-200 ${isProfileOpen ? 'rotate-180' : ''}`} />
-              </button>
+        {/* Desktop Nav */}
+        <nav className="hidden lg:flex space-x-1 items-center">
+          {navItems.map((item) => (
+            <button
+              key={item.view}
+              onClick={() => setView(item.view)}
+              className={`flex items-center gap-2 px-4 py-2 text-sm font-bold rounded-xl transition-all border-2 border-transparent whitespace-nowrap ${
+                currentView === item.view
+                  ? 'bg-[var(--neo-sky)] border-black shadow-[2px_2px_0px_rgba(0,0,0,1)] -translate-y-[2px] -translate-x-[2px]'
+                  : 'text-gray-700 hover:text-black hover:bg-gray-100'
+              }`}
+            >
+              {item.icon}
+              {item.label}
+            </button>
+          ))}
+        </nav>
 
-              {isProfileOpen && (
-                <div className="absolute right-0 mt-2 w-48 bg-white/80 backdrop-blur-xl rounded-2xl shadow-xl border border-gray-100 py-1 ring-1 ring-black ring-opacity-5 transform opacity-100 scale-100 transition-all origin-top-right">
-                  <div className="px-4 py-3 border-b border-gray-100">
-                    <p className="text-sm text-gray-900 font-semibold">Alex Student</p>
-                    <p className="text-xs text-gray-500 truncate">alex@university.edu</p>
-                  </div>
-                  <a href="#" className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors">
-                    <Settings size={14} /> Settings
-                  </a>
-                  <a href="#" className="flex items-center gap-2 px-4 py-2 text-sm text-red-500 hover:bg-red-50 transition-colors">
-                    <LogOut size={14} /> Sign out
-                  </a>
+        <div className="hidden md:flex items-center gap-4">
+          {/* Profile Dropdown */}
+          <div className="relative" ref={profileRef}>
+            <button
+              onClick={() => setIsProfileOpen(!isProfileOpen)}
+              className="border-2 border-transparent hover:border-black rounded-full p-1 flex items-center transition-all focus:outline-none hover:-translate-y-[2px] hover:shadow-[2px_2px_0px_rgba(0,0,0,1)] bg-white"
+            >
+              <img
+                src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-1.2.1&auto=format&fit=crop&w=100&q=80"
+                alt="Profile"
+                className="h-9 w-9 rounded-full object-cover border border-black"
+              />
+              <ChevronDown size={16} className={`text-black transition-transform duration-200 ml-1 ${isProfileOpen ? 'rotate-180' : ''}`} />
+            </button>
+
+            {isProfileOpen && (
+              <div className="absolute right-0 mt-4 w-48 neo-card !p-2 !rounded-2xl transform opacity-100 scale-100 transition-all origin-top-right">
+                <div className="px-3 py-3 border-b border-gray-200/50 mb-2">
+                  <p className="text-sm text-gray-900 font-bold">Alex Student</p>
+                  <p className="text-xs text-gray-500 truncate">alex@university.edu</p>
                 </div>
-              )}
-            </div>
-
-            {/* Mobile menu button */}
-            <div className="flex items-center md:hidden">
-              <button
-                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="inline-flex items-center justify-center p-2 rounded-lg text-gray-500 hover:text-black hover:bg-gray-100 focus:outline-none"
-              >
-                {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-              </button>
-            </div>
+                <button onClick={() => { setView(ViewState.PROFILE); setIsProfileOpen(false); }} className="w-full flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-white/50 rounded-xl transition-colors">
+                  <Settings size={16} /> Settings
+                </button>
+                <button onClick={() => { setView(ViewState.LOGIN); setIsProfileOpen(false); }} className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-500 hover:bg-red-50 rounded-xl transition-colors mt-1">
+                  <LogOut size={16} /> Sign out
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </div>
 
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
-        <div className="md:hidden bg-white/95 backdrop-blur-xl border-t border-gray-100 absolute w-full shadow-lg">
-          <div className="px-4 pt-2 pb-6 space-y-1">
+        <div className="md:hidden absolute to!p-20 left-4 right-4 neo-card pointer-events-auto">
+          <div className="space-y-2">
             {navItems.map((item) => (
               <button
                 key={item.view}
@@ -119,10 +120,10 @@ const Header: React.FC<HeaderProps> = ({ currentView, setView }) => {
                   setView(item.view);
                   setIsMobileMenuOpen(false);
                 }}
-                className={`block w-full text-left px-4 py-3 rounded-xl text-base font-medium transition-colors ${
+                className={`block w-full text-left px-4 py-3 rounded-xl text-base font-bold transition-all ${
                   currentView === item.view
-                    ? 'bg-gray-100 text-black'
-                    : 'text-gray-500 hover:text-black hover:bg-gray-50'
+                    ? 'bg-white shadow-[var(--neo-shadow-in)] text-blue-700'
+                    : 'text-gray-600 hover:text-black hover:bg-white/50'
                 }`}
               >
                 <span className="flex items-center gap-3">
@@ -131,15 +132,21 @@ const Header: React.FC<HeaderProps> = ({ currentView, setView }) => {
                 </span>
               </button>
             ))}
-             <div className="border-t border-gray-100 mt-4 pt-4 px-2 flex items-center gap-3">
+             <div 
+                className="border-t border-gray-200/50 mt-4 pt-4 px-2 flex items-center gap-3 cursor-pointer"
+                onClick={() => {
+                   setView(ViewState.PROFILE);
+                   setIsMobileMenuOpen(false);
+                }}
+             >
                 <img
                   src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-1.2.1&auto=format&fit=crop&w=100&q=80"
                   alt="Profile"
-                  className="h-10 w-10 rounded-full object-cover"
+                  className="h-12 w-12 rounded-full object-cover shadow-[var(--neo-shadow-out-sm)]"
                 />
                 <div>
-                  <p className="text-gray-900 font-medium">Alex Student</p>
-                  <p className="text-xs text-gray-500">View Profile</p>
+                  <p className="text-gray-900 font-bold">Alex Student</p>
+                  <p className="text-xs text-gray-500 font-semibold text-blue-600 hover:underline">View Profile</p>
                 </div>
              </div>
           </div>

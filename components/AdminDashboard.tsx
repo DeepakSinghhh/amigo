@@ -18,13 +18,13 @@ const resourceData = [
 
 const AdminDashboard: React.FC = () => {
   return (
-    <div className="max-w-7xl mx-auto p-6 space-y-8">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center">
+    <div className="max-w-7xl mx-auto p-6 space-y-8 animate-neo-fade-up">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center neo-card-inset !rounded-[2rem] !p-8">
         <div>
-          <h2 className="text-3xl font-semibold text-gray-900 tracking-tight">Department Dashboard</h2>
-          <p className="text-gray-500 mt-1">Real-time anonymized analytics for mental health policy planning.</p>
+          <h2 className="text-3xl font-black text-gray-900 tracking-tight">Department Dashboard</h2>
+          <p className="text-gray-500 mt-2 font-bold text-lg">Real-time anonymized analytics for mental health policy planning.</p>
         </div>
-        <button className="mt-4 md:mt-0 bg-white border border-gray-200 text-gray-900 px-5 py-2.5 rounded-full text-sm font-medium hover:bg-gray-50 transition-colors shadow-sm">
+        <button className="mt-4 md:mt-0 neo-button neo-button-primary !px-6 !py-3">
           Download Report
         </button>
       </div>
@@ -34,57 +34,57 @@ const AdminDashboard: React.FC = () => {
             { title: 'Active Users', value: '1,240', sub: '↑ 12% from last week', subColor: 'text-green-600' },
             { title: 'Chat Sessions', value: '856', sub: 'Avg duration: 12m', subColor: 'text-gray-500' },
             { title: 'Counseling Bookings', value: '42', sub: '98% Fulfillment rate', subColor: 'text-green-600' },
-            { title: 'Crisis Alerts', value: '3', sub: 'Referred to helpline', subColor: 'text-orange-500' }
+            { title: 'Crisis Alerts', value: '3', sub: 'Referred to helpline', subColor: 'text-red-500' }
         ].map((stat, idx) => (
-            <div key={idx} className="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm">
-                <p className="text-sm text-gray-500 font-medium">{stat.title}</p>
-                <p className="text-3xl font-bold text-gray-900 mt-2 tracking-tight">{stat.value}</p>
-                <p className={`text-xs mt-1 font-medium ${stat.subColor}`}>{stat.sub}</p>
+            <div key={idx} className="neo-card !p-6 flex flex-col justify-between">
+                <p className="text-sm text-gray-500 font-extrabold uppercase tracking-wide">{stat.title}</p>
+                <p className="text-4xl font-black text-gray-900 mt-4 tracking-tight drop-shadow-sm">{stat.value}</p>
+                <p className={`text-sm mt-3 font-bold ${stat.subColor}`}>{stat.sub}</p>
             </div>
         ))}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Mood Trends Chart */}
-        <div className="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm">
-          <h3 className="text-lg font-semibold text-gray-900 mb-6">Aggregated Mood Trends</h3>
+        <div className="neo-card !p-8">
+          <h3 className="text-xl font-black text-gray-900 mb-8 tracking-tight">Aggregated Mood Trends</h3>
           <div className="h-72">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={moodData}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f3f4f6" />
-                <XAxis dataKey="name" axisLine={false} tickLine={false} stroke="#9ca3af" tick={{fontSize: 12}} dy={10} />
-                <YAxis axisLine={false} tickLine={false} stroke="#9ca3af" tick={{fontSize: 12}} />
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#ffffff" strokeOpacity={0.4} />
+                <XAxis dataKey="name" axisLine={false} tickLine={false} stroke="#9ca3af" tick={{fontSize: 12, fontWeight: 'bold'}} dy={10} />
+                <YAxis axisLine={false} tickLine={false} stroke="#9ca3af" tick={{fontSize: 12, fontWeight: 'bold'}} />
                 <Tooltip 
-                  contentStyle={{ backgroundColor: '#fff', borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }}
-                  itemStyle={{ fontSize: '12px', fontWeight: 500 }}
+                  contentStyle={{ backgroundColor: 'var(--neo-bg)', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.5)', boxShadow: 'var(--neo-shadow-out-sm)' }}
+                  itemStyle={{ fontSize: '14px', fontWeight: 800 }}
                 />
-                <Line type="monotone" dataKey="Anxiety" stroke="#ef4444" strokeWidth={3} dot={{r:4, fill: '#ef4444', strokeWidth: 0}} activeDot={{r: 6}} />
-                <Line type="monotone" dataKey="Stress" stroke="#f59e0b" strokeWidth={3} dot={{r:4, fill: '#f59e0b', strokeWidth: 0}} activeDot={{r: 6}} />
-                <Line type="monotone" dataKey="Calm" stroke="#0d9488" strokeWidth={3} dot={{r:4, fill: '#0d9488', strokeWidth: 0}} activeDot={{r: 6}} />
+                <Line type="monotone" dataKey="Anxiety" stroke="#ef4444" strokeWidth={4} dot={{r:6, fill: '#ef4444', stroke: '#fff', strokeWidth: 2}} activeDot={{r: 8}} />
+                <Line type="monotone" dataKey="Stress" stroke="#f59e0b" strokeWidth={4} dot={{r:6, fill: '#f59e0b', stroke: '#fff', strokeWidth: 2}} activeDot={{r: 8}} />
+                <Line type="monotone" dataKey="Calm" stroke="#0d9488" strokeWidth={4} dot={{r:6, fill: '#0d9488', stroke: '#fff', strokeWidth: 2}} activeDot={{r: 8}} />
               </LineChart>
             </ResponsiveContainer>
           </div>
-          <div className="flex justify-center gap-6 mt-6 text-sm font-medium text-gray-600">
-             <div className="flex items-center gap-2"><div className="w-2.5 h-2.5 rounded-full bg-red-500"></div>Anxiety</div>
-             <div className="flex items-center gap-2"><div className="w-2.5 h-2.5 rounded-full bg-amber-500"></div>Stress</div>
-             <div className="flex items-center gap-2"><div className="w-2.5 h-2.5 rounded-full bg-teal-600"></div>Calm</div>
+          <div className="flex justify-center gap-6 mt-8 text-sm font-bold text-gray-600">
+             <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-red-500 shadow-[var(--neo-shadow-out-sm)]"></div>Anxiety</div>
+             <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-amber-500 shadow-[var(--neo-shadow-out-sm)]"></div>Stress</div>
+             <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-teal-600 shadow-[var(--neo-shadow-out-sm)]"></div>Calm</div>
           </div>
         </div>
 
         {/* Resource Usage Chart */}
-        <div className="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm">
-          <h3 className="text-lg font-semibold text-gray-900 mb-6">Popular Resources</h3>
+        <div className="neo-card !p-8">
+          <h3 className="text-xl font-black text-gray-900 mb-8 tracking-tight">Popular Resources</h3>
           <div className="h-72">
              <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={resourceData} layout="vertical">
-                   <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#f3f4f6" />
+                   <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#ffffff" strokeOpacity={0.4} />
                    <XAxis type="number" hide />
-                   <YAxis dataKey="name" type="category" width={110} tick={{fontSize: 13, fill: '#4b5563', fontWeight: 500}} />
+                   <YAxis dataKey="name" type="category" width={120} tick={{fontSize: 13, fill: '#4b5563', fontWeight: 800}} axisLine={false} tickLine={false} />
                    <Tooltip 
-                      cursor={{fill: '#f9fafb'}}
-                      contentStyle={{ backgroundColor: '#fff', borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }}
+                      cursor={{fill: 'rgba(255,255,255,0.4)'}}
+                      contentStyle={{ backgroundColor: 'var(--neo-bg)', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.5)', boxShadow: 'var(--neo-shadow-out-sm)', fontWeight: 800 }}
                    />
-                   <Bar dataKey="value" fill="#0071e3" radius={[0, 6, 6, 0]} barSize={24} />
+                   <Bar dataKey="value" fill="var(--neo-sky)" radius={[12, 12, 12, 12]} barSize={28} />
                 </BarChart>
              </ResponsiveContainer>
           </div>

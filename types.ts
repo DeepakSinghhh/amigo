@@ -4,8 +4,23 @@ export enum ViewState {
   BOOKING = 'BOOKING',
   RESOURCES = 'RESOURCES',
   FORUM = 'FORUM',
-  ADMIN = 'ADMIN',
-  GAMES = 'GAMES'
+  ADMIN = 'ADMIN', // Institution Admin
+  GAMES = 'GAMES',
+  LOGIN = 'LOGIN',
+  PROFILE = 'PROFILE',
+  COUNSELOR_PORTAL = 'COUNSELOR_PORTAL',
+  PARENT_PORTAL = 'PARENT_PORTAL',
+  SUPER_ADMIN = 'SUPER_ADMIN'
+}
+
+export type UserRole = 'student' | 'counselor' | 'parent' | 'institution_admin' | 'super_admin';
+
+export interface UserProfile {
+  id: string;
+  role: UserRole;
+  name: string;
+  email: string;
+  avatar?: string;
 }
 
 export interface Message {
@@ -46,4 +61,18 @@ export interface ForumPost {
 export interface AnalyticsData {
   name: string;
   value: number;
+}
+
+export interface MoodLog {
+  date: string; // ISO date string
+  mood: 'great' | 'good' | 'okay' | 'bad' | 'awful';
+  score: number; // 1 to 5
+}
+
+export interface AssessmentResult {
+  date: string;
+  type: string;
+  score: number;
+  severity: string;
+  recommendation: string;
 }

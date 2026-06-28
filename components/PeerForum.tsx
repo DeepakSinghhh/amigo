@@ -56,15 +56,15 @@ const PeerForum: React.FC = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8 p-6">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-6 rounded-3xl shadow-sm border border-gray-100">
+    <div className="max-w-4xl mx-auto space-y-8 p-6 animate-neo-fade-up">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center ga!p-4 neo-card-inset !rounded-[2rem] !p-6">
         <div>
-           <h2 className="text-2xl font-bold text-gray-900">Peer Support Space</h2>
-           <p className="text-gray-500 text-sm mt-1">A safe, moderated community to share and support.</p>
+           <h2 className="text-3xl font-black text-gray-900 tracking-tight">Peer Support Space</h2>
+           <p className="text-gray-500 text-sm mt-2 font-bold">A safe, moderated community to share and support.</p>
         </div>
         <button 
           onClick={() => setIsPostModalOpen(true)}
-          className="bg-gray-900 text-white px-5 py-3 rounded-full font-medium hover:bg-black shadow-lg transition-all flex items-center gap-2"
+          className="neo-button neo-button-primary !py-3 flex items-center gap-2"
         >
           <Plus size={18} />
           Share Thoughts
@@ -72,52 +72,54 @@ const PeerForum: React.FC = () => {
       </div>
 
       {/* Warning Banner */}
-      <div className="bg-blue-50 border border-blue-100 p-5 rounded-2xl flex gap-3">
-        <div className="w-1 bg-blue-500 rounded-full h-auto"></div>
-        <p className="text-sm text-blue-800 leading-relaxed">
-          <strong className="font-semibold block mb-1">Community Guidelines</strong> 
+      <div className="neo-badge neo-bg-sky text-blue-900 p-5 !rounded-2xl flex gap-4 text-left shadow-[var(--neo-shadow-out-sm)] border border-white">
+        <div className="w-1.5 bg-blue-500 rounded-full h-auto shadow-inner"></div>
+        <p className="text-sm font-semibold leading-relaxed">
+          <strong className="font-black block mb-1">Community Guidelines</strong> 
           Be kind, respectful, and supportive. This forum is moderated by trained student volunteers to ensure a safe environment for everyone.
         </p>
       </div>
 
       <div className="space-y-6">
         {posts.map((post) => (
-          <div key={post.id} className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
-            <div className="flex justify-between items-start mb-5">
+          <div key={post.id} className="neo-card !p-8 hover:-translate-y-1 transition-transform">
+            <div className="flex justify-between items-start mb-6">
               <div className="flex items-center gap-4">
-                <div className={`p-2.5 rounded-full ${post.isVerifiedPeer ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-500'}`}>
-                   <UserCircle size={24} />
+                <div className={`p-3 rounded-2xl shadow-[var(--neo-shadow-out-sm)] border border-white ${post.isVerifiedPeer ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-500'}`}>
+                   <UserCircle size={28} />
                 </div>
                 <div>
                   <div className="flex items-center gap-2">
-                    <span className="font-bold text-gray-900">{post.authorAlias}</span>
+                    <span className="font-black text-gray-900 text-lg">{post.authorAlias}</span>
                     {post.isVerifiedPeer && (
-                      <BadgeCheck size={16} className="text-blue-500" fill="currentColor" color="white" />
+                      <BadgeCheck size={18} className="text-blue-500 drop-shadow-sm" fill="currentColor" color="white" />
                     )}
                   </div>
-                  <span className="text-xs text-gray-400 font-medium">2 hours ago</span>
+                  <span className="text-xs text-gray-500 font-bold">2 hours ago</span>
                 </div>
               </div>
               <div className="flex gap-2">
                 {post.tags.map(tag => (
-                  <span key={tag} className="text-[11px] font-semibold bg-gray-50 text-gray-500 px-3 py-1 rounded-full border border-gray-200">#{tag}</span>
+                  <span key={tag} className="text-[11px] font-black uppercase tracking-widest bg-white/60 text-gray-600 px-3 py-1.5 rounded-lg border border-white/50 shadow-[var(--neo-shadow-out-sm)]">#{tag}</span>
                 ))}
               </div>
             </div>
             
-            <p className="text-gray-700 leading-relaxed mb-6 text-lg">{post.content}</p>
+            <div className="neo-card-inset !p-6 bg-white/40 mb-6 border border-white/40">
+              <p className="text-gray-800 leading-relaxed text-lg font-bold">{post.content}</p>
+            </div>
             
-            <div className="flex items-center gap-8 text-gray-400 text-sm font-medium pt-4 border-t border-gray-50">
+            <div className="flex items-center gap-8 text-gray-500 text-sm font-black pt-2">
               <button className="flex items-center gap-2 hover:text-red-500 transition-colors group">
-                <Heart size={20} className="group-hover:fill-red-500" />
+                <Heart size={22} className="group-hover:fill-red-500" />
                 <span>{post.likes}</span>
               </button>
-              <button className="flex items-center gap-2 hover:text-blue-500 transition-colors">
-                <MessageSquare size={20} />
+              <button className="flex items-center gap-2 hover:text-blue-600 transition-colors">
+                <MessageSquare size={22} />
                 <span>{post.replies} Replies</span>
               </button>
               <button className="flex items-center gap-2 hover:text-gray-900 transition-colors ml-auto">
-                <Share2 size={18} />
+                <Share2 size={20} />
                 <span>Share</span>
               </button>
             </div>
@@ -127,25 +129,26 @@ const PeerForum: React.FC = () => {
 
        {/* Modal */}
        {isPostModalOpen && (
-        <div className="fixed inset-0 bg-black/20 backdrop-blur-md z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl shadow-2xl w-full max-w-lg p-8 animate-fade-in-up">
-            <h3 className="text-2xl font-bold mb-6 text-gray-900">Create a Post</h3>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 animate-fade-in" style={{zIndex: 100}}>
+          <div className="absolute inset-0 bg-black/20 backdrop-blur-sm" onClick={() => setIsPostModalOpen(false)}></div>
+          <div className="relative neo-card w-full max-w-lg !p-8 animate-neo-fade-up">
+            <h3 className="text-2xl font-black mb-6 text-gray-900 tracking-tight">Create a Post</h3>
             <textarea
               value={newPostContent}
               onChange={(e) => setNewPostContent(e.target.value)}
               placeholder="What's on your mind? (Posts are anonymous)"
-              className="w-full h-40 p-4 bg-gray-50 border border-gray-200 text-gray-900 rounded-2xl focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 focus:outline-none resize-none mb-6 placeholder-gray-400"
+              className="w-full h-40 neo-input !p-4 mb-6 font-bold text-gray-800"
             />
-            <div className="flex justify-end gap-3">
+            <div className="flex justify-end gap-4">
               <button 
                 onClick={() => setIsPostModalOpen(false)}
-                className="px-6 py-3 text-gray-500 hover:bg-gray-100 rounded-full font-medium transition-colors"
+                className="neo-button !bg-white/60 !text-gray-600 hover:!bg-white"
               >
                 Cancel
               </button>
               <button 
                 onClick={handleCreatePost}
-                className="px-6 py-3 bg-gray-900 text-white rounded-full font-medium hover:bg-black transition-colors"
+                className="neo-button neo-button-primary"
               >
                 Post Anonymously
               </button>

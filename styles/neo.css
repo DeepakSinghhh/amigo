@@ -1,0 +1,172 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&display=swap');
+
+:root {
+  /* Neobrutalism Base Variables */
+  --neo-bg: #e5e5f7; /* Slightly off-white or grid background color */
+  --neo-radius-sm: 4px;
+  --neo-radius-md: 8px;
+  --neo-radius-lg: 12px;
+  --neo-radius-full: 9999px;
+
+  /* Accent Colors (Stark & Bold) */
+  --neo-coral: #ff5e5b;
+  --neo-peach: #ff9f1c;
+  --neo-mint: #2ec4b6;
+  --neo-sky: #00b4d8;
+  --neo-lavender: #c77dff;
+  --neo-amber: #ffbe0b;
+  
+  /* Text Colors */
+  --neo-text-dark: #000000;
+  --neo-text-muted: #555555;
+
+  /* Shadows - Hard Solid Black */
+  --neo-shadow: 4px 4px 0px 0px rgba(0,0,0,1);
+  --neo-shadow-hover: 6px 6px 0px 0px rgba(0,0,0,1);
+  --neo-shadow-active: 0px 0px 0px 0px rgba(0,0,0,1);
+
+  --neo-border: 3px solid #000000;
+}
+
+body {
+  font-family: 'Space Grotesk', sans-serif;
+  background-color: var(--neo-bg);
+  background-image:  repeating-radial-gradient( circle at 0 0, transparent 0, #e5e5f7 10px ), repeating-linear-gradient( #444cf755, #444cf7 );
+  color: var(--neo-text-dark);
+}
+
+/* Base Neo Utilities */
+
+.neo-card {
+  background-color: #ffffff;
+  border-radius: var(--neo-radius-md);
+  border: var(--neo-border);
+  box-shadow: var(--neo-shadow);
+  padding: 24px;
+  transition: all 0.2s ease-in-out;
+}
+
+.neo-card:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: var(--neo-shadow-hover);
+}
+
+.neo-card-inset {
+  background-color: #f8f9fa;
+  border-radius: var(--neo-radius-md);
+  border: var(--neo-border);
+  box-shadow: inset 4px 4px 0px rgba(0,0,0,0.1);
+  padding: 24px;
+}
+
+.neo-button {
+  background-color: #ffffff;
+  border-radius: var(--neo-radius-md);
+  border: var(--neo-border);
+  box-shadow: var(--neo-shadow);
+  padding: 12px 24px;
+  font-weight: 700;
+  color: var(--neo-text-dark);
+  cursor: pointer;
+  transition: all 0.1s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-transform: uppercase;
+}
+
+.neo-button:active, .neo-button.active {
+  box-shadow: var(--neo-shadow-active);
+  transform: translate(4px, 4px);
+}
+
+.neo-button-primary {
+  background-color: var(--neo-sky);
+  color: #000;
+}
+
+.neo-button-danger {
+  background-color: var(--neo-coral);
+  color: #000;
+}
+
+.neo-input {
+  background-color: #ffffff;
+  border-radius: var(--neo-radius-md);
+  border: var(--neo-border);
+  box-shadow: var(--neo-shadow);
+  padding: 16px 20px;
+  font-family: inherit;
+  color: var(--neo-text-dark);
+  outline: none;
+  transition: all 0.1s ease;
+}
+
+.neo-input:focus {
+  box-shadow: var(--neo-shadow-active);
+  transform: translate(4px, 4px);
+}
+
+.neo-nav {
+  background-color: #ffffff;
+  border: var(--neo-border);
+  border-radius: var(--neo-radius-md);
+  box-shadow: var(--neo-shadow);
+  padding: 8px;
+  display: inline-flex;
+  gap: 4px;
+}
+
+.neo-badge {
+  background-color: #ffffff;
+  border: 2px solid #000;
+  border-radius: var(--neo-radius-sm);
+  box-shadow: 2px 2px 0px 0px rgba(0,0,0,1);
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Animations */
+@keyframes neo-fade-in-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-neo-float {
+  /* No floating in brutalism, keep it static or use a heavy keyframe */
+  animation: neo-fade-in-up 0.3s ease-out forwards;
+}
+
+.animate-neo-fade-up {
+  animation: neo-fade-in-up 0.3s ease-out forwards;
+}
+
+/* Color Modifiers */
+.neo-bg-coral { background-color: var(--neo-coral) !important; }
+.neo-bg-peach { background-color: var(--neo-peach) !important; }
+.neo-bg-mint { background-color: var(--neo-mint) !important; }
+.neo-bg-sky { background-color: var(--neo-sky) !important; }
+.neo-bg-lavender { background-color: var(--neo-lavender) !important; }
+.neo-bg-amber { background-color: var(--neo-amber) !important; }
+
+/* Custom Scrollbar for Neo */
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+  border-left: 2px solid #000;
+}
+::-webkit-scrollbar-track {
+  background: #fff; 
+}
+::-webkit-scrollbar-thumb {
+  background: var(--neo-sky); 
+  border: 2px solid #000;
+  border-radius: 0;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--neo-coral); 
+}

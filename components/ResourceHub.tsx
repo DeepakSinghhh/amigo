@@ -67,10 +67,10 @@ const ResourceHub: React.FC<ResourceHubProps> = ({ activeCategory, setActiveCate
   });
 
   return (
-    <div className="max-w-7xl mx-auto space-y-10 p-6">
+    <div className="max-w-7xl mx-auto space-y-10 p-6 animate-neo-fade-up">
       <div className="text-center space-y-4">
-        <h2 className="text-4xl font-semibold text-gray-900 tracking-tight">Psychoeducational Hub</h2>
-        <p className="text-gray-500 text-lg">Curated materials to support your mental wellness journey.</p>
+        <h2 className="text-4xl font-black text-gray-900 tracking-tight">Psychoeducational Hub</h2>
+        <p className="text-gray-600 text-lg font-bold">Curated materials to support your mental wellness journey.</p>
         
         {/* Search & Filter */}
         <div className="flex flex-col md:flex-row gap-6 max-w-4xl mx-auto mt-8 items-center">
@@ -81,7 +81,7 @@ const ResourceHub: React.FC<ResourceHubProps> = ({ activeCategory, setActiveCate
               placeholder="Search resources..." 
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-12 pr-4 py-3.5 rounded-2xl border border-gray-200 bg-white text-gray-900 placeholder-gray-400 focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all shadow-sm"
+              className="w-full pl-12 pr-4 py-4 neo-input font-bold text-gray-900"
             />
           </div>
         </div>
@@ -91,10 +91,10 @@ const ResourceHub: React.FC<ResourceHubProps> = ({ activeCategory, setActiveCate
               <button
                 key={cat}
                 onClick={() => setActiveCategory(cat)}
-                className={`whitespace-nowrap px-5 py-2.5 rounded-full text-sm font-medium transition-all ${
+                className={`whitespace-nowrap px-6 py-3 rounded-full text-sm font-bold transition-all border border-white/50 ${
                   activeCategory === cat 
-                    ? 'bg-gray-900 text-white shadow-lg' 
-                    : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50'
+                    ? 'bg-[var(--neo-sky)] text-blue-900 shadow-[var(--neo-shadow-in)]' 
+                    : 'bg-white/60 text-gray-600 hover:bg-white shadow-[var(--neo-shadow-out-sm)]'
                 }`}
               >
                 {cat}
@@ -105,7 +105,7 @@ const ResourceHub: React.FC<ResourceHubProps> = ({ activeCategory, setActiveCate
 
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
         {filteredResources.map(resource => (
-          <div key={resource.id} className="group bg-white rounded-3xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 overflow-hidden flex flex-col h-full hover:-translate-y-1">
+          <div key={resource.id} className="group neo-card !p-0 overflow-hidden flex flex-col h-full hover:-translate-y-1">
             <div className="relative h-56 overflow-hidden">
               <img 
                 src={resource.imageUrl} 
@@ -114,26 +114,26 @@ const ResourceHub: React.FC<ResourceHubProps> = ({ activeCategory, setActiveCate
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-60"></div>
               
-              <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-md text-gray-900 text-xs font-bold px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow-sm">
+              <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-md text-gray-900 text-xs font-black px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow-[var(--neo-shadow-out-sm)] border border-white/50">
                  {resource.type === 'video' && <PlayCircle size={14} className="text-blue-600" />}
                  {resource.type === 'audio' && <Headphones size={14} className="text-purple-600" />}
                  {resource.type === 'guide' && <FileText size={14} className="text-orange-600" />}
                  <span className="capitalize">{resource.type}</span>
               </div>
               {resource.language !== 'English' && (
-                <div className="absolute top-4 left-4 bg-black/60 text-white text-xs px-3 py-1.5 rounded-full flex items-center gap-1.5 font-medium backdrop-blur-md">
+                <div className="absolute top-4 left-4 bg-black/60 text-white text-xs px-3 py-1.5 rounded-full flex items-center gap-1.5 font-bold backdrop-blur-md border border-white/20">
                   <Globe size={12} />
                   {resource.language}
                 </div>
               )}
             </div>
-            <div className="p-7 flex flex-col flex-1">
+            <div className="p-7 flex flex-col flex-1 bg-[var(--neo-bg)]">
               <div className="mb-3">
-                <span className="text-[11px] font-bold text-blue-600 uppercase tracking-widest bg-blue-50 px-2 py-1 rounded-md">{resource.category}</span>
+                <span className="text-[11px] font-black text-blue-800 uppercase tracking-widest bg-blue-100/50 px-3 py-1.5 rounded-lg border border-white/60 shadow-[var(--neo-shadow-out-sm)]">{resource.category}</span>
               </div>
-              <h3 className="font-bold text-xl text-gray-900 mb-3 leading-snug">{resource.title}</h3>
-              <p className="text-gray-500 text-sm mb-6 flex-1 leading-relaxed">{resource.description}</p>
-              <button className="w-full py-3 bg-gray-50 text-gray-900 font-semibold rounded-xl hover:bg-gray-100 transition-colors flex items-center justify-center gap-2 group-hover:bg-blue-600 group-hover:text-white">
+              <h3 className="font-black text-xl text-gray-900 mb-3 leading-snug">{resource.title}</h3>
+              <p className="text-gray-600 text-sm mb-6 flex-1 font-semibold leading-relaxed">{resource.description}</p>
+              <button className="neo-button neo-button-primary w-full !py-3 flex items-center justify-center gap-2 group-hover:bg-[var(--neo-sky)] group-hover:text-blue-900">
                 <span>View Resource</span>
                 <ArrowRight size={16} />
               </button>

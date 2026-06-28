@@ -3,31 +3,19 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>AmiGo - Student Mental Wellness</title>
+    <title>Chaitanya - Student Mental Wellness</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/styles/neo.css">
     <style>
       body {
-        font-family: '-apple-system', 'BlinkMacSystemFont', 'Inter', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
       }
-      /* Custom scrollbar - Minimalist Apple style */
-      ::-webkit-scrollbar {
-        width: 8px;
-        height: 8px;
-      }
-      ::-webkit-scrollbar-track {
-        background: transparent; 
-      }
-      ::-webkit-scrollbar-thumb {
-        background: #d1d5db; 
-        border-radius: 100vh;
-        border: 2px solid transparent;
-        background-clip: content-box;
-      }
-      ::-webkit-scrollbar-thumb:hover {
-        background: #9ca3af; 
+      
+      #root {
+        background-color: var(--neo-bg);
+        min-height: 100vh;
       }
     </style>
   <script type="importmap">
@@ -45,7 +33,7 @@
 }
 </script>
 </head>
-  <body class="bg-[#F5F5F7] text-[#1D1D1F] antialiased selection:bg-blue-500/20">
+  <body class="antialiased selection:bg-blue-500/20">
     <div id="root"></div>
     <script type="module" src="/index.tsx"></script>
   </body>

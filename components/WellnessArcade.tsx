@@ -1,9 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Gamepad2, Wind, Activity, X } from 'lucide-react';
+import { Gamepad2, Wind, Activity, X, PenTool } from 'lucide-react';
 import FlappyLlama from './FlappyLlama';
+import GratitudeJournal from './GratitudeJournal';
 
 const WellnessArcade: React.FC = () => {
-    const [activeGame, setActiveGame] = useState<'llama' | 'breathing' | 'bubble' | null>(null);
+    const [activeGame, setActiveGame] = useState<'llama' | 'breathing' | 'bubble' | 'journal' | null>(null);
+    const [xp, setXp] = useState(1250);
+    const [streak, setStreak] = useState(5);
 
     // --- Bubble Pop Game Components ---
     const BubbleGame = () => {
@@ -121,31 +124,51 @@ const WellnessArcade: React.FC = () => {
 
     return (
         <div className="max-w-7xl mx-auto p-6 space-y-8 min-h-screen">
-            <div className="text-center space-y-4 py-8">
-                <div className="w-16 h-16 bg-purple-100 rounded-3xl flex items-center justify-center mx-auto text-purple-600 mb-4 shadow-sm">
+            {/* Gamification Header */}
+            <div className="flex flex-col sm:flex-row justify-between items-center neo-card-inset !rounded-[2rem] !p-6 mb-8 ga!p-4">
+                <div className="flex items-center gap-4">
+                    <div className="w-16 h-16 rounded-full bg-white shadow-[var(--neo-shadow-out-sm)] flex items-center justify-center text-2xl border border-white/50">
+                        🏆
+                    </div>
+                    <div>
+                        <h3 className="text-xl font-black text-gray-900 tracking-tight">Wellness Champion</h3>
+                        <p className="text-sm font-bold text-gray-500">Level 4</p>
+                    </div>
+                </div>
+                <div className="flex items-center gap-4">
+                    <div className="neo-badge neo-bg-coral text-[#7a2818] flex items-center gap-2 !px-4 !py-2 !text-sm">
+                        <span>🔥</span> {streak} Day Streak
+                    </div>
+                    <div className="neo-badge neo-bg-mint text-green-900 flex items-center gap-2 !px-4 !py-2 !text-sm">
+                        <span>⭐</span> {xp} XP
+                    </div>
+                </div>
+            </div>
+
+            <div className="text-center space-y-4 py-8 animate-neo-fade-up">
+                <div className="w-16 h-16 bg-white rounded-3xl flex items-center justify-center mx-auto text-purple-600 mb-4 shadow-[var(--neo-shadow-out-sm)] border border-white">
                     <Gamepad2 size={32} />
                 </div>
-                <h2 className="text-4xl font-semibold text-gray-900 tracking-tight">Wellness Arcade</h2>
-                <p className="text-gray-500 max-w-2xl mx-auto text-lg">
+                <h2 className="text-4xl font-black text-gray-900 tracking-tight">Wellness Arcade</h2>
+                <p className="text-gray-600 max-w-2xl mx-auto text-lg font-bold">
                     Take a mental break with these simple, stress-relieving activities.
                 </p>
             </div>
 
-            <div className="grid md:grid-cols-3 gap-8">
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
                 {/* Game Card 1: Llama Leap */}
                 <div 
                     onClick={() => setActiveGame('llama')}
-                    className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all cursor-pointer group relative overflow-hidden"
+                    className="neo-card neo-bg-sky cursor-pointer group relative overflow-hidden"
                 >
-                    <div className="absolute top-0 right-0 w-32 h-32 bg-sky-100 rounded-bl-[100px] -mr-8 -mt-8 z-0"></div>
                     <div className="relative z-10">
-                        <div className="w-14 h-14 bg-sky-100 rounded-2xl flex items-center justify-center text-sky-600 mb-6 group-hover:scale-110 transition-transform">
-                             <span className="text-2xl">🦙</span>
+                        <div className="w-16 h-16 bg-white/60 rounded-2xl flex items-center justify-center text-sky-600 mb-6 group-hover:scale-110 transition-transform shadow-[var(--neo-shadow-out-sm)] border border-white">
+                             <span className="text-3xl">🦙</span>
                         </div>
-                        <h3 className="text-2xl font-bold text-gray-900 mb-2">Llama Leap</h3>
-                        <p className="text-gray-500 leading-relaxed">Focus your mind with this rhythmic jumping game. How far can you go?</p>
-                        <div className="mt-6 flex items-center text-sky-600 font-semibold gap-2">
-                            Play Now <Activity size={16} />
+                        <h3 className="text-2xl font-black text-blue-900 mb-2 tracking-tight">Llama Leap</h3>
+                        <p className="text-blue-800 font-semibold leading-relaxed">Focus your mind with this rhythmic jumping game. How far can you go?</p>
+                        <div className="mt-6 flex items-center text-blue-900 font-black gap-2">
+                            Play Now <Activity size={18} />
                         </div>
                     </div>
                 </div>
@@ -153,17 +176,16 @@ const WellnessArcade: React.FC = () => {
                 {/* Game Card 2: Bubble Pop */}
                 <div 
                     onClick={() => setActiveGame('bubble')}
-                    className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all cursor-pointer group relative overflow-hidden"
+                    className="neo-card neo-bg-peach cursor-pointer group relative overflow-hidden"
                 >
-                    <div className="absolute top-0 right-0 w-32 h-32 bg-pink-100 rounded-bl-[100px] -mr-8 -mt-8 z-0"></div>
                     <div className="relative z-10">
-                        <div className="w-14 h-14 bg-pink-100 rounded-2xl flex items-center justify-center text-pink-600 mb-6 group-hover:scale-110 transition-transform">
-                             <div className="w-6 h-6 rounded-full border-2 border-pink-500"></div>
+                        <div className="w-16 h-16 bg-white/60 rounded-2xl flex items-center justify-center text-pink-600 mb-6 group-hover:scale-110 transition-transform shadow-[var(--neo-shadow-out-sm)] border border-white">
+                             <div className="w-8 h-8 rounded-full border-4 border-pink-400"></div>
                         </div>
-                        <h3 className="text-2xl font-bold text-gray-900 mb-2">Bubble Pop</h3>
-                        <p className="text-gray-500 leading-relaxed">Satisfying stress relief. Pop the floating bubbles to clear your mind.</p>
-                         <div className="mt-6 flex items-center text-pink-600 font-semibold gap-2">
-                            Start Popping <Activity size={16} />
+                        <h3 className="text-2xl font-black text-[#7a2818] mb-2 tracking-tight">Bubble Pop</h3>
+                        <p className="text-[#a32e1d] font-semibold leading-relaxed">Satisfying stress relief. Pop the floating bubbles to clear your mind.</p>
+                         <div className="mt-6 flex items-center text-[#7a2818] font-black gap-2">
+                            Start Popping <Activity size={18} />
                         </div>
                     </div>
                 </div>
@@ -171,17 +193,33 @@ const WellnessArcade: React.FC = () => {
                 {/* Game Card 3: Zen Breath */}
                 <div 
                     onClick={() => setActiveGame('breathing')}
-                    className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all cursor-pointer group relative overflow-hidden"
+                    className="neo-card neo-bg-mint cursor-pointer group relative overflow-hidden"
                 >
-                    <div className="absolute top-0 right-0 w-32 h-32 bg-teal-100 rounded-bl-[100px] -mr-8 -mt-8 z-0"></div>
                     <div className="relative z-10">
-                        <div className="w-14 h-14 bg-teal-100 rounded-2xl flex items-center justify-center text-teal-600 mb-6 group-hover:scale-110 transition-transform">
-                             <Wind size={24} />
+                        <div className="w-16 h-16 bg-white/60 rounded-2xl flex items-center justify-center text-teal-700 mb-6 group-hover:scale-110 transition-transform shadow-[var(--neo-shadow-out-sm)] border border-white">
+                             <Wind size={28} />
                         </div>
-                        <h3 className="text-2xl font-bold text-gray-900 mb-2">Zen Breath</h3>
-                        <p className="text-gray-500 leading-relaxed">A guided 4-7-8 breathing exercise to lower cortisol and anxiety.</p>
-                         <div className="mt-6 flex items-center text-teal-600 font-semibold gap-2">
-                            Begin Exercise <Activity size={16} />
+                        <h3 className="text-2xl font-black text-green-900 mb-2 tracking-tight">Zen Breath</h3>
+                        <p className="text-green-800 font-semibold leading-relaxed">A guided 4-7-8 breathing exercise to lower cortisol and anxiety.</p>
+                         <div className="mt-6 flex items-center text-green-900 font-black gap-2">
+                            Begin Exercise <Activity size={18} />
+                        </div>
+                    </div>
+                </div>
+
+                {/* Game Card 4: Gratitude Journal */}
+                <div 
+                    onClick={() => setActiveGame('journal')}
+                    className="neo-card neo-bg-amber cursor-pointer group relative overflow-hidden"
+                >
+                    <div className="relative z-10">
+                        <div className="w-16 h-16 bg-white/60 rounded-2xl flex items-center justify-center text-orange-600 mb-6 group-hover:scale-110 transition-transform shadow-[var(--neo-shadow-out-sm)] border border-white">
+                             <PenTool size={28} />
+                        </div>
+                        <h3 className="text-2xl font-black text-[#7a2818] mb-2 tracking-tight">Gratitude Journal</h3>
+                        <p className="text-[#a32e1d] font-semibold leading-relaxed">Reflect on the good things in your day. Earn XP for daily entries.</p>
+                         <div className="mt-6 flex items-center text-[#7a2818] font-black gap-2">
+                            Start Writing <Activity size={18} />
                         </div>
                     </div>
                 </div>
@@ -189,20 +227,22 @@ const WellnessArcade: React.FC = () => {
 
             {/* Game Modal Overlay */}
             {activeGame && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-fade-in">
-                    <div className="relative w-full max-w-lg h-[600px] bg-white rounded-[32px] shadow-2xl overflow-hidden animate-fade-in-up">
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 animate-fade-in" style={{zIndex: 100}}>
+                    <div className="absolute inset-0 bg-black/20 backdrop-blur-sm" onClick={() => setActiveGame(null)}></div>
+                    <div className="relative w-full max-w-lg h-[600px] neo-card !p-0 overflow-hidden animate-neo-fade-up">
                          
-                         <div className="h-full w-full">
+                         <div className="h-full w-full bg-[var(--neo-bg)]">
                              {activeGame === 'llama' && <FlappyLlama onClose={() => setActiveGame(null)} variant="arcade" />}
                              {activeGame === 'bubble' && <BubbleGame />}
                              {activeGame === 'breathing' && <BreathingGame />}
+                             {activeGame === 'journal' && <GratitudeJournal />}
                          </div>
 
                         {/* Moved button to end of container to ensure it's on top of game content */}
                         {activeGame !== 'llama' && (
                              <button 
                                 onClick={() => setActiveGame(null)}
-                                className="absolute top-4 right-4 z-50 p-2.5 bg-white/80 hover:bg-white backdrop-blur-md rounded-full text-gray-800 transition-colors border border-gray-200 shadow-md"
+                                className="absolute top-4 right-4 z-50 p-2 bg-white/40 hover:bg-white/60 backdrop-blur-lg rounded-full text-gray-800 transition-colors border border-white/50 shadow-md"
                                 title="Close Activity"
                              >
                                 <X size={24} />

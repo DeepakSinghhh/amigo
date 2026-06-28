@@ -7,7 +7,14 @@ import ResourceHub from './components/ResourceHub';
 import PeerForum from './components/PeerForum';
 import AdminDashboard from './components/AdminDashboard';
 import WellnessArcade from './components/WellnessArcade';
-import { ViewState } from './types';
+import MoodTracker from './components/MoodTracker';
+import MentalHealthAssessment from './components/MentalHealthAssessment';
+import AuthScreen from './components/AuthScreen';
+import UserProfile from './components/UserProfile';
+import CounselorPortal from './components/CounselorPortal';
+import ParentPortal from './components/ParentPortal';
+import SuperAdminPortal from './components/SuperAdminPortal';
+import { ViewState, UserRole } from './types';
 import { Phone, X, MessageCircle, Binoculars, Heart } from 'lucide-react';
 
 const TECHNIQUES = [
@@ -54,9 +61,24 @@ const TECHNIQUES = [
 ];
 
 const App: React.FC = () => {
-  const [currentView, setCurrentView] = useState<ViewState>(ViewState.HOME);
+  const [currentView, setCurrentView] = useState<ViewState>(ViewState.LOGIN);
   const [resourceCategory, setResourceCategory] = useState<string>('All');
   const [selectedTechnique, setSelectedTechnique] = useState<typeof TECHNIQUES[0] | null>(null);
+  const [currentUserRole, setCurrentUserRole] = useState<UserRole | null>(null);
+
+  const handleLogin = (role: UserRole) => {
+      setCurrentUserRole(role);
+      if (role === 'student') setCurrentView(ViewState.HOME);
+      else if (role === 'counselor') setCurrentView(ViewState.COUNSELOR_PORTAL);
+      else if (role === 'parent') setCurrentView(ViewState.PARENT_PORTAL);
+      else if (role === 'super_admin') setCurrentView(ViewState.SUPER_ADMIN);
+      else if (role === 'institution_admin') setCurrentView(ViewState.ADMIN);
+  };
+
+  const handleLogout = () => {
+      setCurrentUserRole(null);
+      setCurrentView(ViewState.LOGIN);
+  };
 
   const handleNavigateToResources = (category: string) => {
     setResourceCategory(category);
@@ -65,6 +87,16 @@ const App: React.FC = () => {
 
   const renderContent = () => {
     switch (currentView) {
+      case ViewState.LOGIN:
+        return <AuthScreen onLogin={handleLogin} />;
+      case ViewState.PROFILE:
+        return <UserProfile onLogout={handleLogout} />;
+      case ViewState.COUNSELOR_PORTAL:
+        return <CounselorPortal />;
+      case ViewState.PARENT_PORTAL:
+        return <ParentPortal />;
+      case ViewState.SUPER_ADMIN:
+        return <SuperAdminPortal />;
       case ViewState.CHAT:
         return <Chatbot onNavigateToResources={handleNavigateToResources} />;
       case ViewState.BOOKING:
@@ -82,33 +114,33 @@ const App: React.FC = () => {
         return (
           <div className="space-y-0 pb-0">
             {/* Hero Section */}
-            <section className="relative bg-[#F5F5F7] text-gray-900 py-32 px-4 overflow-hidden">
-               {/* Minimalist Apple-style background blobs */}
-               <div className="absolute top-0 left-0 w-full h-full opacity-60 pointer-events-none">
-                  <div className="w-[800px] h-[800px] bg-blue-200/40 rounded-full blur-[120px] absolute -top-96 -left-40 mix-blend-multiply"></div>
-                  <div className="w-[600px] h-[600px] bg-purple-200/40 rounded-full blur-[120px] absolute top-10 right-0 mix-blend-multiply"></div>
+            <section className="relative text-gray-900 pt-40 pb-32 px-4 overflow-hidden min-h-[90vh] flex flex-col justify-center">
+               {/* 3D floating clay blobs (CSS-only) */}
+               <div className="absolute top-0 left-0 w-full h-full opacity-60 pointer-events-none overflow-hidden">
+                  <div className="w-[600px] h-[600px] bg-[var(--neo-lavender)] rounded-[40%_60%_70%_30%/40%_50%_60%_50%] absolute -top-40 -left-20 mix-blend-multiply animate-neo-float" style={{animationDuration: '10s'}}></div>
+                  <div className="w-[500px] h-[500px] bg-[var(--neo-peach)] rounded-[60%_40%_30%_70%/60%_30%_70%_40%] absolute top-20 right-10 mix-blend-multiply animate-neo-float" style={{animationDuration: '14s', animationDelay: '1s'}}></div>
                </div>
                
-               <div className="relative max-w-4xl mx-auto text-center space-y-8">
-                 <h1 className="text-6xl md:text-7xl font-semibold leading-tight tracking-tight text-[#1d1d1f]">
+               <div className="relative max-w-4xl mx-auto text-center space-y-10 z-10 animate-neo-fade-up">
+                 <h1 className="text-6xl md:text-7xl font-black leading-tight tracking-tight text-[var(--neo-text-dark)] drop-shadow-sm">
                    You Are Not Alone. <br/> 
-                   <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">
+                   <span className="text-blue-500">
                      We Are Here to Listen.
                    </span>
                  </h1>
-                 <p className="text-2xl text-gray-500 max-w-2xl mx-auto font-normal leading-relaxed">
+                 <p className="text-2xl text-gray-600 max-w-2xl mx-auto font-bold leading-relaxed">
                    A confidential, judgment-free space for students. Professional support, AI tools, and community at your fingertips.
                  </p>
-                 <div className="flex flex-wrap justify-center gap-5 pt-8">
+                 <div className="flex flex-wrap justify-center gap-6 pt-8">
                    <button 
                      onClick={() => setCurrentView(ViewState.CHAT)}
-                     className="bg-[#0071e3] text-white px-8 py-4 rounded-full font-medium text-lg hover:bg-[#0077ED] transition-all active:scale-95 shadow-lg shadow-blue-500/20"
+                     className="neo-button neo-button-primary !px-10 !py-5 !text-lg !rounded-[2rem]"
                    >
                      Chat with AI Support
                    </button>
                    <button 
                      onClick={() => setCurrentView(ViewState.BOOKING)}
-                     className="bg-white text-[#1d1d1f] border border-gray-300 px-8 py-4 rounded-full font-medium text-lg hover:bg-gray-50 transition-all active:scale-95 shadow-sm"
+                     className="neo-button !px-10 !py-5 !text-lg !rounded-[2rem]"
                    >
                      Book Counselor
                    </button>
@@ -121,48 +153,45 @@ const App: React.FC = () => {
               <div className="grid md:grid-cols-2 gap-16 items-center">
                 {/* Left: Phone Visual */}
                 <div className="relative flex justify-center">
-                  <div className="absolute inset-0 bg-blue-100 rounded-full blur-3xl opacity-30 transform -translate-x-10 translate-y-10"></div>
                   
-                  {/* CSS Phone Mockup */}
-                  <div className="relative border-gray-800 dark:border-gray-800 bg-gray-800 border-[14px] rounded-[2.5rem] h-[600px] w-[300px] shadow-2xl rotate-[-2deg] hover:rotate-0 transition-transform duration-500">
-                    <div className="w-[148px] h-[18px] bg-gray-800 top-0 rounded-b-[1rem] left-1/2 -translate-x-1/2 absolute z-20"></div>
-                    <div className="h-[32px] w-[3px] bg-gray-800 absolute -left-[17px] top-[72px] rounded-l-lg"></div>
-                    <div className="h-[46px] w-[3px] bg-gray-800 absolute -left-[17px] top-[124px] rounded-l-lg"></div>
-                    <div className="h-[64px] w-[3px] bg-gray-800 absolute -right-[17px] top-[142px] rounded-r-lg"></div>
-                    <div className="rounded-[2rem] overflow-hidden w-full h-full bg-white relative flex flex-col z-10">
+                  {/* Clay Phone Mockup */}
+                  <div className="neo-card !p-3 !rounded-[3rem] h-[600px] w-[300px] rotate-[-3deg] hover:rotate-0 transition-transform duration-500 bg-white">
+                    <div className="rounded-[2.5rem] overflow-hidden w-full h-full bg-[var(--neo-bg)] relative flex flex-col z-10 shadow-[var(--neo-shadow-in-deep)]">
                         {/* Status Bar */}
-                        <div className="h-8 bg-gray-50 w-full"></div>
+                        <div className="h-8 w-full flex justify-center items-center">
+                            <div className="w-1/3 h-4 bg-black/10 rounded-full mt-2"></div>
+                        </div>
                         {/* Chat UI Mockup */}
-                        <div className="bg-gray-50 flex-1 p-4 space-y-4 pt-8">
+                        <div className="flex-1 p-4 space-y-4 pt-4">
                              <div className="flex gap-2 animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
-                                <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-blue-500 to-cyan-400 flex items-center justify-center text-xs text-white">Kiwi</div>
-                                <div className="bg-white p-3 rounded-2xl rounded-tl-none shadow-sm text-xs text-gray-600 max-w-[80%] border border-gray-100">
+                                <div className="w-8 h-8 rounded-full bg-[var(--neo-sky)] flex items-center justify-center text-xs shadow-[var(--neo-shadow-out-sm)] border border-white/50 font-bold text-blue-900">Kiwi</div>
+                                <div className="neo-card-inset !p-3 !rounded-2xl !rounded-tl-none text-xs text-gray-700 max-w-[80%] font-semibold">
                                     Hi! I'm Kiwi. How are you feeling today?
                                 </div>
                              </div>
                              <div className="flex gap-2 flex-row-reverse animate-fade-in-up" style={{ animationDelay: '0.5s' }}>
-                                <div className="bg-blue-600 p-3 rounded-2xl rounded-tr-none shadow-sm text-xs text-white max-w-[80%]">
+                                <div className="neo-card neo-bg-coral !p-3 !rounded-2xl !rounded-tr-none text-xs text-[#7a2818] max-w-[80%] font-bold">
                                     I've been feeling really overwhelmed with exams coming up.
                                 </div>
                              </div>
                              <div className="flex gap-2 animate-fade-in-up" style={{ animationDelay: '1.2s' }}>
-                                <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-blue-500 to-cyan-400 flex items-center justify-center text-xs text-white">Kiwi</div>
-                                <div className="bg-white p-3 rounded-2xl rounded-tl-none shadow-sm text-xs text-gray-600 max-w-[80%] border border-gray-100">
+                                <div className="w-8 h-8 rounded-full bg-[var(--neo-sky)] flex items-center justify-center text-xs shadow-[var(--neo-shadow-out-sm)] border border-white/50 font-bold text-blue-900">Kiwi</div>
+                                <div className="neo-card-inset !p-3 !rounded-2xl !rounded-tl-none text-xs text-gray-700 max-w-[80%] font-semibold">
                                     I hear you. Exam stress is very common. Would you like to try a quick breathing exercise or talk about a study plan?
                                 </div>
                              </div>
                              {/* Suggestion Chips */}
                              <div className="flex gap-2 mt-4 animate-fade-in-up" style={{ animationDelay: '1.5s' }}>
-                                <div className="px-3 py-1.5 bg-blue-50 text-blue-600 rounded-full text-[10px] font-semibold border border-blue-100">Breathing Exercise</div>
-                                <div className="px-3 py-1.5 bg-blue-50 text-blue-600 rounded-full text-[10px] font-semibold border border-blue-100">Study Tips</div>
+                                <div className="neo-badge neo-bg-mint text-green-900">Breathing Exercise</div>
+                                <div className="neo-badge neo-bg-lavender text-purple-900">Study Tips</div>
                              </div>
                         </div>
                         {/* Floating Kiwi Logo overlay */}
-                         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-24 h-24 bg-gradient-to-tr from-blue-500 to-cyan-400 rounded-3xl shadow-2xl flex items-center justify-center rotate-12 hover:rotate-6 transition-all duration-500 cursor-pointer">
-                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-28 h-28 bg-[var(--neo-sky)] rounded-full shadow-[var(--neo-shadow-out-hover)] flex items-center justify-center rotate-12 hover:rotate-6 transition-all duration-500 cursor-pointer border border-white">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#1e4b6d" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                                 <path d="M12 5c-5 0-9 4-9 9 0 4.5 3.5 8.5 8 9 4.5-.5 8-4.5 8-9" />
                                 <path d="M19 14c2.5 0 3 2.5 3 2.5" />
-                                <circle cx="16" cy="11" r="1.5" fill="white" stroke="none" />
+                                <circle cx="16" cy="11" r="1.5" fill="#1e4b6d" stroke="none" />
                                 <path d="M10 20l-1.5 3" />
                                 <path d="M14 20l1.5 3" />
                             </svg>
@@ -206,62 +235,68 @@ const App: React.FC = () => {
             </section>
 
             {/* Features Grid - Bento Box Style */}
-            <section className="max-w-7xl mx-auto px-4 py-16 grid md:grid-cols-3 gap-6">
+            <section className="max-w-7xl mx-auto px-4 py-16 grid md:grid-cols-3 gap-8">
               <div 
                 onClick={() => setCurrentView(ViewState.RESOURCES)}
-                className="bg-white p-10 rounded-3xl shadow-sm border border-gray-100 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-pointer group"
+                className="neo-card neo-bg-peach cursor-pointer group"
               >
-                <div className="w-14 h-14 bg-orange-100 rounded-2xl flex items-center justify-center mb-6 text-orange-500 group-hover:scale-110 transition-transform">
-                   <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                <div className="w-16 h-16 bg-white/60 rounded-2xl flex items-center justify-center mb-6 text-orange-600 group-hover:scale-110 transition-transform shadow-[var(--neo-shadow-out-sm)] border border-white">
+                   <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
                 </div>
-                <h3 className="text-2xl font-semibold text-gray-900 mb-3">Self-Help Library</h3>
-                <p className="text-gray-500 text-lg leading-relaxed">Access videos, audio guides, and articles curated for student life challenges.</p>
+                <h3 className="text-2xl font-black text-gray-900 mb-3">Self-Help Library</h3>
+                <p className="text-gray-700 text-lg font-semibold leading-relaxed">Access videos, audio guides, and articles curated for student life challenges.</p>
               </div>
 
               <div 
                 onClick={() => setCurrentView(ViewState.FORUM)}
-                className="bg-white p-10 rounded-3xl shadow-sm border border-gray-100 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-pointer group"
+                className="neo-card neo-bg-lavender cursor-pointer group"
               >
-                <div className="w-14 h-14 bg-indigo-100 rounded-2xl flex items-center justify-center mb-6 text-indigo-500 group-hover:scale-110 transition-transform">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                <div className="w-16 h-16 bg-white/60 rounded-2xl flex items-center justify-center mb-6 text-purple-600 group-hover:scale-110 transition-transform shadow-[var(--neo-shadow-out-sm)] border border-white">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
                 </div>
-                <h3 className="text-2xl font-semibold text-gray-900 mb-3">Peer Support</h3>
-                <p className="text-gray-500 text-lg leading-relaxed">Connect anonymously with fellow students and trained volunteers.</p>
+                <h3 className="text-2xl font-black text-gray-900 mb-3">Peer Support</h3>
+                <p className="text-gray-700 text-lg font-semibold leading-relaxed">Connect anonymously with fellow students and trained volunteers.</p>
               </div>
 
               <div 
                  onClick={() => setCurrentView(ViewState.ADMIN)}
-                 className="bg-white p-10 rounded-3xl shadow-sm border border-gray-100 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-pointer group"
+                 className="neo-card neo-bg-mint cursor-pointer group"
               >
-                <div className="w-14 h-14 bg-teal-100 rounded-2xl flex items-center justify-center mb-6 text-teal-600 group-hover:scale-110 transition-transform">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+                <div className="w-16 h-16 bg-white/60 rounded-2xl flex items-center justify-center mb-6 text-teal-700 group-hover:scale-110 transition-transform shadow-[var(--neo-shadow-out-sm)] border border-white">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
                 </div>
-                <h3 className="text-2xl font-semibold text-gray-900 mb-3">Institution Insights</h3>
-                <p className="text-gray-500 text-lg leading-relaxed">Data-driven dashboards for IQAC and Welfare departments to track trends.</p>
+                <h3 className="text-2xl font-black text-gray-900 mb-3">Institution Insights</h3>
+                <p className="text-gray-700 text-lg font-semibold leading-relaxed">Data-driven dashboards for IQAC and Welfare departments to track trends.</p>
               </div>
+            </section>
+
+            {/* Mood and Assessment Section */}
+            <section className="max-w-7xl mx-auto px-4 py-16 grid md:grid-cols-2 gap-8 relative z-10">
+                <MoodTracker />
+                <MentalHealthAssessment />
             </section>
 
             {/* Evidence-Based Techniques Section */}
             <section className="max-w-7xl mx-auto px-4 py-20 space-y-12">
               <div className="text-center max-w-3xl mx-auto space-y-4">
-                <h2 className="text-4xl font-semibold text-gray-900 tracking-tight">Evidence-Based Techniques</h2>
-                <p className="text-gray-500 text-xl font-light">
+                <h2 className="text-4xl font-black text-gray-900 tracking-tight">Evidence-Based Techniques</h2>
+                <p className="text-gray-600 text-xl font-bold">
                   Scientifically proven methods for managing panic and anxiety in under 10 minutes.
                 </p>
               </div>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
                 {TECHNIQUES.map((item, idx) => (
                   <div 
                     key={idx} 
                     onClick={() => setSelectedTechnique(item)}
-                    className="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500 group cursor-pointer transform hover:-translate-y-1"
+                    className="neo-card !p-4 group cursor-pointer"
                   >
-                    <div className="h-48 overflow-hidden relative">
+                    <div className="h-48 overflow-hidden relative rounded-2xl shadow-[var(--neo-shadow-in)]">
                          <div className="absolute inset-0 bg-black/5 group-hover:bg-transparent transition-colors z-10"></div>
                          <img src={item.img} alt={item.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out" />
                     </div>
-                    <div className="p-6 text-center border-t border-gray-100">
-                      <h4 className="text-gray-900 font-semibold tracking-tight text-lg">{item.title}</h4>
+                    <div className="pt-6 pb-2 text-center">
+                      <h4 className="text-gray-900 font-extrabold tracking-tight text-xl">{item.title}</h4>
                     </div>
                   </div>
                 ))}
@@ -269,38 +304,37 @@ const App: React.FC = () => {
             </section>
 
             {/* Endorsed by Professionals Section */}
-            <section className="bg-white py-24 px-4 border-y border-gray-100 mt-16 mb-16">
-              <div className="max-w-6xl mx-auto">
+            <section className="py-24 px-4 mt-16 mb-16 relative">
+              <div className="max-w-6xl mx-auto relative z-10">
                 <div className="text-center mb-16">
-                   <h2 className="text-4xl md:text-5xl font-semibold tracking-tight text-[#C07E72]">Endorsed by professionals</h2>
+                   <h2 className="text-4xl md:text-5xl font-black tracking-tight text-[#b87063]">Endorsed by professionals</h2>
                 </div>
                 
                 <div className="flex flex-col md:flex-row items-center gap-12 md:gap-24">
                   <div className="flex-1 relative">
-                     <span className="text-7xl text-[#C07E72]/20 font-serif absolute -top-8 -left-4 font-bold">“</span>
-                     <div className="bg-[#fcfaf9] p-8 md:p-12 rounded-tr-[4rem] rounded-bl-[4rem] relative z-10 shadow-sm border border-[#C07E72]/10">
-                        <p className="text-xl md:text-2xl text-gray-600 italic font-medium leading-relaxed">
-                           I find <span className="text-[#C07E72]">AmiGo</span> very useful when working with students suffering from anxiety. It allows them to conveniently try different techniques inspired by the newest therapy approaches and pick the one that works best for them. I highly recommend it!
+                     <span className="text-7xl text-[#C07E72]/20 font-serif absolute -top-8 -left-4 font-black">“</span>
+                     <div className="neo-card neo-bg-coral relative z-10 !p-10 !rounded-[3rem]">
+                        <p className="text-xl md:text-2xl text-[#7a2818] italic font-bold leading-relaxed">
+                           I find <span className="text-[#a32e1d] font-black">Chaitanya</span> very useful when working with students suffering from anxiety. It allows them to conveniently try different techniques inspired by the newest therapy approaches and pick the one that works best for them. I highly recommend it!
                         </p>
-                        <span className="text-7xl text-[#C07E72]/20 font-serif absolute -bottom-10 right-4 leading-none font-bold">”</span>
+                        <span className="text-7xl text-[#C07E72]/30 font-serif absolute -bottom-10 right-4 leading-none font-bold">”</span>
                      </div>
                      
                      <div className="mt-8 text-center md:text-right px-4">
-                        <h4 className="text-2xl font-bold text-[#C07E72] tracking-tight">Dr. Ewelina Tur</h4>
-                        <p className="text-gray-500 font-medium mt-1">Psychologist, Psychotherapist</p>
-                        <p className="text-gray-400 text-sm">European Association for Behavioural and Cognitive Therapy</p>
+                        <h4 className="text-2xl font-extrabold text-[#b87063] tracking-tight">Dr. Ewelina Tur</h4>
+                        <p className="text-[#b87063] font-bold mt-1 opacity-80">Psychologist, Psychotherapist</p>
+                        <p className="text-[#b87063] text-sm opacity-60 font-semibold">European Association for Behavioural and Cognitive Therapy</p>
                      </div>
                   </div>
                   
                   <div className="shrink-0 relative">
-                      <div className="w-64 h-64 md:w-80 md:h-80 rounded-full overflow-hidden border-8 border-white shadow-2xl bg-gray-100 ring-1 ring-gray-100">
+                      <div className="w-64 h-64 md:w-80 md:h-80 rounded-full overflow-hidden neo-card !p-3">
                          <img 
                            src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=600" 
                            alt="Professional" 
-                           className="w-full h-full object-cover"
+                           className="w-full h-full object-cover rounded-full shadow-[var(--neo-shadow-in)]"
                          />
                       </div>
-                      <div className="absolute -bottom-4 -right-4 w-24 h-24 bg-[#C07E72] rounded-full opacity-10 blur-2xl"></div>
                   </div>
                 </div>
               </div>
@@ -309,78 +343,78 @@ const App: React.FC = () => {
             {/* Testimonials Section */}
             <section className="py-24 px-4 relative overflow-hidden">
                 <div className="max-w-7xl mx-auto relative z-10">
-                    <div className="bg-white rounded-[40px] shadow-2xl shadow-gray-200/50 border border-white/50 p-8 md:p-16">
-                        <h2 className="text-4xl font-semibold text-center text-gray-900 mb-16 tracking-tight">What students say</h2>
+                    <div className="neo-card !p-12 md:!p-16">
+                        <h2 className="text-4xl font-black text-center text-gray-900 mb-16 tracking-tight">What students say</h2>
                         <div className="grid md:grid-cols-3 gap-10">
                             {/* Card 1 */}
                             <div className="flex flex-col items-center text-center group">
-                                <div className="bg-[#F5F5F7] p-8 rounded-3xl relative mb-8 min-h-[200px] flex items-center justify-center transition-all group-hover:bg-blue-50/50">
-                                    <p className="text-gray-600 text-lg font-medium leading-relaxed">
+                                <div className="neo-card-inset !p-8 relative mb-8 min-h-[200px] flex items-center justify-center transition-all">
+                                    <p className="text-gray-700 text-lg font-bold leading-relaxed">
                                         "I love it! It's so great that it's free and accessible to everyone! I also really like the idea of an Explore page because there are so many ways to help yourself!"
                                     </p>
                                 </div>
-                                <h4 className="text-gray-900 font-bold text-lg">Sarah T.</h4>
-                                <p className="text-gray-500 text-sm font-medium">In-app feedback</p>
+                                <h4 className="text-gray-900 font-extrabold text-xl">Sarah T.</h4>
+                                <p className="text-gray-500 text-sm font-bold">In-app feedback</p>
                             </div>
 
                             {/* Card 2 */}
                             <div className="flex flex-col items-center text-center group">
-                                <div className="bg-[#F5F5F7] p-8 rounded-3xl relative mb-8 min-h-[200px] flex items-center justify-center transition-all group-hover:bg-blue-50/50">
-                                    <p className="text-gray-600 text-lg font-medium leading-relaxed">
+                                <div className="neo-card-inset !p-8 relative mb-8 min-h-[200px] flex items-center justify-center transition-all">
+                                    <p className="text-gray-700 text-lg font-bold leading-relaxed">
                                         "The exercises are fantastic. Most of the time I can honestly see that I'm feeling better than I did prior to doing the exercise. It keeps me interested!"
                                     </p>
                                 </div>
-                                <h4 className="text-gray-900 font-bold text-lg">Godshot1966</h4>
-                                <p className="text-gray-500 text-sm font-medium">App Store review</p>
+                                <h4 className="text-gray-900 font-extrabold text-xl">Godshot1966</h4>
+                                <p className="text-gray-500 text-sm font-bold">App Store review</p>
                             </div>
 
                             {/* Card 3 */}
                             <div className="flex flex-col items-center text-center group">
-                                <div className="bg-[#F5F5F7] p-8 rounded-3xl relative mb-8 min-h-[200px] flex items-center justify-center transition-all group-hover:bg-blue-50/50">
-                                    <p className="text-gray-600 text-lg font-medium leading-relaxed">
+                                <div className="neo-card-inset !p-8 relative mb-8 min-h-[200px] flex items-center justify-center transition-all">
+                                    <p className="text-gray-700 text-lg font-bold leading-relaxed">
                                         "I tend to be skeptical of a lot of self-help stuff I see online, however I gave this a go and was surprised that it actually helped."
                                     </p>
                                 </div>
-                                <h4 className="text-gray-900 font-bold text-lg">Mark S.</h4>
-                                <p className="text-gray-500 text-sm font-medium">Study participant</p>
+                                <h4 className="text-gray-900 font-extrabold text-xl">Mark S.</h4>
+                                <p className="text-gray-500 text-sm font-bold">Study participant</p>
                             </div>
                         </div>
                     </div>
                 </div>
             </section>
 
-            {/* Glassmorphism Detail Modal for Techniques */}
+            {/* Glassmorphism/Claymorphism Detail Modal for Techniques */}
             {selectedTechnique && (
               <div 
                 className="fixed inset-0 z-50 flex items-center justify-center p-4 animate-fade-in"
                 style={{ zIndex: 100 }}
               >
                  <div 
-                    className="absolute inset-0 bg-black/40 backdrop-blur-md transition-opacity" 
+                    className="absolute inset-0 bg-black/20 backdrop-blur-sm transition-opacity" 
                     onClick={() => setSelectedTechnique(null)}
                  ></div>
                  
-                 <div className="relative bg-white/85 backdrop-blur-2xl p-0 rounded-[32px] shadow-2xl max-w-lg w-full border border-white/60 overflow-hidden transform transition-all scale-100 animate-fade-in-up">
-                    <div className="relative h-64 w-full">
+                 <div className="relative neo-card !p-0 max-w-lg w-full overflow-hidden transform transition-all scale-100 animate-neo-fade-up">
+                    <div className="relative h-64 w-full p-2">
                        <img 
                           src={selectedTechnique.img} 
                           alt={selectedTechnique.title} 
-                          className="w-full h-full object-cover" 
+                          className="w-full h-full object-cover rounded-[20px] shadow-[var(--neo-shadow-in)]" 
                         />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+                        <div className="absolute inset-2 rounded-[20px] bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none"></div>
                         <button 
                           onClick={() => setSelectedTechnique(null)} 
-                          className="absolute top-4 right-4 p-2 bg-white/20 backdrop-blur-lg hover:bg-white/40 text-white rounded-full transition-colors border border-white/30"
+                          className="absolute top-6 right-6 p-2 bg-white/40 backdrop-blur-lg hover:bg-white/60 text-white rounded-full transition-colors border border-white/50 shadow-md"
                         >
                           <X size={20} />
                         </button>
-                        <h3 className="absolute bottom-6 left-8 text-4xl font-bold text-white tracking-tight drop-shadow-md">
+                        <h3 className="absolute bottom-8 left-8 text-4xl font-black text-white tracking-tight drop-shadow-lg">
                           {selectedTechnique.title}
                         </h3>
                     </div>
                     
                     <div className="p-8 space-y-6">
-                      <p className="text-gray-700 text-lg leading-relaxed font-medium">
+                      <p className="text-gray-700 text-lg leading-relaxed font-bold">
                         {selectedTechnique.description}
                       </p>
                       
@@ -390,7 +424,7 @@ const App: React.FC = () => {
                              setSelectedTechnique(null);
                              handleNavigateToResources(selectedTechnique.title);
                            }}
-                           className="w-full py-4 bg-gray-900 text-white rounded-2xl font-semibold hover:bg-black transition-all shadow-lg active:scale-95"
+                           className="neo-button neo-button-primary w-full !py-4"
                         >
                           Explore Related Resources
                         </button>
@@ -405,22 +439,24 @@ const App: React.FC = () => {
   };
 
   const isChatView = currentView === ViewState.CHAT;
+  const isAuthView = currentView === ViewState.LOGIN;
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#F5F5F7] font-sans text-gray-900">
-      <Header currentView={currentView} setView={setCurrentView} />
+    <div className="min-h-screen flex flex-col bg-transparent font-sans text-[var(--neo-text-dark)]">
+      {!isAuthView && <Header currentView={currentView} setView={setCurrentView} />}
       
       <main 
         className={`flex-grow px-0 transition-all duration-300 ease-in-out ${
           isChatView 
             ? 'h-[calc(100vh-56px)] overflow-hidden pt-4 pb-0 px-4 sm:px-6' 
-            : 'pt-0 pb-0'
+            : isAuthView ? '' : 'pt-0 pb-0'
         }`}
       >
         {renderContent()}
       </main>
 
-      {/* Persistent Help Button - IOS Style */}
+      {/* Persistent Help Button - Neo Style */}
+      {!isAuthView && (
       <div className="fixed bottom-6 right-6 z-40">
         <a 
           href="#" 
@@ -428,14 +464,15 @@ const App: React.FC = () => {
               e.preventDefault();
               alert("In a real deployment, this would dial the campus emergency line.");
           }}
-          className="flex items-center gap-3 bg-[#FF3B30] text-white px-6 py-3.5 rounded-full shadow-lg shadow-red-500/30 hover:bg-red-600 transition-all font-semibold active:scale-95 hover:shadow-xl"
+          className="neo-button neo-button-danger animate-neo-pulse !rounded-full !p-4 !h-14 !w-auto"
         >
-          <Phone size={20} fill="currentColor" />
+          <Phone size={24} fill="currentColor" />
           <span className="tracking-wide">Help Line</span>
         </a>
       </div>
+      )}
 
-      {!isChatView && <Footer />}
+      {(!isChatView && !isAuthView) && <Footer />}
     </div>
   );
 };
